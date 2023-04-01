@@ -8,10 +8,10 @@ ray_at <- function(ray, t) {
 
 hit_sphere <- function(center, radius, ray) {
   oc <- ray$orig - center
-  a <- (ray$dir %*% ray$dir)[1]
-  b <- 2.0 * (oc %*% ray$dir)[1]
-  c <- (oc %*% oc)[1] - radius*radius
-  discriminant <- b*b - 4*a*c
+  a <- sum(ray$dir^2)
+  half_b <- (oc %*% ray$dir)[1]
+  c <- sum(oc^2) - radius^2
+  discriminant <- half_b^2 - a*c
   if (discriminant < 0) -1
-  else (-b - sqrt(discriminant) ) / (2.0*a)
+  else (-half_b - sqrt(discriminant)) / a
 }
