@@ -8,12 +8,12 @@ new_hit <- function(point, outward_normal, t, ray) {
   )
 }
 
-hittable_list <- function(hit_fns) {
+hittable_list <- function(...) {
   function(ray, t_min, t_max) {
     hit <- NULL
     closest_so_far <- t_max
 
-    for (hit_fn in hit_fns) {
+    for (hit_fn in list(...)) {
       temp <- hit_fn(ray, t_min, closest_so_far)
       if (!is.null(temp)) {
         closest_so_far <- temp$t

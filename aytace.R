@@ -20,10 +20,10 @@ lower_left_corner <- origin - horizontal/2 - vertical/2 - c(0, 0, focal_length)
 
 img <- matrix(nrow=image_height - 1, ncol=image_width - 1)
 
-world <- hittable_list(c(
+world <- hittable_list(
   sphere(c(0, 0, -1), 0.5),
   sphere(c(0, -100.5, -1), 100)
-))
+)
 
 ray_color <- function(ray) {
   hit <- world(ray, 0, Inf)
