@@ -1,6 +1,7 @@
 source("vec.R")
 source("ray.R")
 source("color.R")
+source("hittable.R")
 
 # Image
 aspect_ratio <- 16.0 / 9.0
@@ -19,16 +20,20 @@ lower_left_corner <- origin - horizontal/2 - vertical/2 - c(0, 0, focal_length)
 
 img <- matrix(nrow=image_height - 1, ncol=image_width - 1)
 
+world <- hittable_list(c(
+  sphere(c(0, 0, -1), 0.5),
+  sphere(c(0, -100.5, -1), 100)
+))
+
 ray_color <- function(ray) {
-  t <- hit_sphere(c(0,0,-1), 0.5, ray)
-  if (t > 0) {
-    n <- vec_unit(ray_at(ray, t) - c(0, 0, -1))
-    return(to_rgb(0.5*(n + 1)))
+  hit <- world(ray, 0, Inf)
+  if (!is.null(hit <- world(ray, 0, Inf))) {
+      to_rgb(0.5 * (hit$normal + c(1, 1, 1)))
+  } else {
+    unit_direction <- vec_unit(ray$dir)
+    t <- 0.5*(unit_direction[2] + 1.0)
+    to_rgb((1.0-t)*c(1.0, 1.0, 1.0) + t*c(0.5, 0.7, 1.0))
   }
-  unit_direction <- vec_unit(ray$dir)
-  t = 0.5*(unit_direction[2] + 1.0)
-  col <- (1.0-t)*c(1.0, 1.0, 1.0) + t*c(0.5, 0.7, 1.0)
-  to_rgb(col)
 }
 
 for (j in seq(image_height-1, 0, -1)) {

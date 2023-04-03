@@ -1,13 +1,13 @@
 new_ray <- function(origin, direction) {
-  list(orig=origin, dir=direction)
+  list(origin=origin, dir=direction)
 }
 
 ray_at <- function(ray, t) {
-  ray$orig + t*ray$dir
+  ray$origin + t*ray$dir
 }
 
 hit_sphere <- function(center, radius, ray) {
-  oc <- ray$orig - center
+  oc <- ray$origin - center
   a <- sum(ray$dir^2)
   half_b <- (oc %*% ray$dir)[1]
   c <- sum(oc^2) - radius^2
