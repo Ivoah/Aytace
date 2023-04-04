@@ -1,10 +1,11 @@
-new_hit <- function(point, outward_normal, t, ray) {
+new_hit <- function(point, outward_normal, t, ray, color) {
   front_face <- (ray$dir %*% outward_normal)[1] < 0
   list(
-    p=point,
+    point=point,
     normal=if (front_face) outward_normal else -outward_normal,
     t=t,
-    front_face=front_face
+    front_face=front_face,
+    color=color
   )
 }
 
@@ -25,7 +26,7 @@ hittable_list <- function(...) {
   }
 }
 
-sphere <- function(center, radius) {
+sphere <- function(center, radius, color) {
   function(ray, t_min, t_max) {
     oc <- ray$origin - center
     a <- sum(ray$dir^2)
@@ -45,6 +46,6 @@ sphere <- function(center, radius) {
     }
 
     point <- ray_at(ray, root)
-    new_hit(point, (point - center)/radius, root, ray)
+    new_hit(point, (point - center)/radius, root, ray, color)
   }
 }
