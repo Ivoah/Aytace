@@ -69,3 +69,22 @@ triangle <- function(v1, v2, v3, color) {
     } else NULL
   }
 }
+
+stl <- function(filename, color) {
+  regex <- "(?m)^facet normal (-?\\d+.\\d+) (-?\\d+.\\d+) (-?\\d+.\\d+)
+outer loop
+vertex (-?\\d+.\\d+) (-?\\d+.\\d+) (-?\\d+.\\d+)
+vertex (-?\\d+.\\d+) (-?\\d+.\\d+) (-?\\d+.\\d+)
+vertex (-?\\d+.\\d+) (-?\\d+.\\d+) (-?\\d+.\\d+)
+endloop
+endfacet"
+  contents <- paste(readLines(filename), collapse="\n")
+  matches <- str_match_all(contents, regex)[[1]]
+  triangles <- list()
+  for (n in 1:nrow(matches)) {
+    v <- as.numeric(matches[n,5:13])
+    args <- list(c(v[1], v[2], v[3]), c(v[4], v[5], v[6]), c(v[7], v[8], v[9]), color)
+    triangles[[n]] <- do.call(triangle, args)
+  }
+  do.call(hittable_list, triangles)
+}
