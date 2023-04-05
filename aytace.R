@@ -1,20 +1,21 @@
+library(pracma)
+
 source("vec.R")
 source("ray.R")
 source("color.R")
 source("hittable.R")
-source("camera.R")
 source("random.R")
 
 # Image
 aspect_ratio <- 16.0 / 9.0
-image_width <- 400
+image_width <- 128
 image_height <- image_width / aspect_ratio
 
 # Camera
 viewport_height <- 2.0
 viewport_width <- aspect_ratio * viewport_height
 focal_length <- 1.0
-samples <- 256
+samples <- 10
 max_depth <- 5
 
 origin <- c(0, 0, 0)
@@ -24,9 +25,24 @@ lower_left_corner <- origin - horizontal/2 - vertical/2 - c(0, 0, focal_length)
 
 img <- matrix(nrow=image_height - 1, ncol=image_width - 1)
 
+# world <- hittable_list(
+#   sphere(c(0, 0, -1), 0.5, c(1, 0, 0)),
+#   sphere(c(0, -100.5, -1), 100, c(0, 1, 0))
+# )
+red <- c(0.8, 0, 0)
+green <- c(0, 0.8, 0)
+black <- c(0, 0, 0)
+
+v2 <- c(1, 0, -2)
+v1 <- c(-1, 0, -2)
+v3 <- c(0, 1, -2)
+
 world <- hittable_list(
-  sphere(c(0, 0, -1), 0.5, c(1, 0, 0)),
-  sphere(c(0, -100.5, -1), 100, c(0, 1, 0))
+  sphere(c(0, -100.5, -1), 100, green),
+  sphere(v1, 0.1, black),
+  sphere(v2, 0.1, black),
+  sphere(v3, 0.1, black),
+  triangle(v1, v2, v3, red)
 )
 
 ray_color <- function(ray, world, depth = max_depth) {

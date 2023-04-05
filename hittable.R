@@ -49,3 +49,23 @@ sphere <- function(center, radius, color) {
     new_hit(point, (point - center)/radius, root, ray, color)
   }
 }
+
+triangle <- function(v1, v2, v3, color) {
+  function(ray, t_min, t_max) {
+    edgeAB <- v2 - v1
+    edgeAC <- v3 - v1
+    normalVector <- cross(edgeAB, edgeAC)
+    ao <- ray$origin - v1
+    dao <- cross(ao, ray$dir)
+    determinant <- -ray$dir %*% normalVector
+    
+    t <- (ao %*% normalVector)/determinant
+    u <- (edgeAC %*% dao)/determinant
+    v <- -(edgeAB %*% dao)/determinant
+    w <- 1 - u - v
+    
+    if (determinant > 1e-6 && t >= t_min && t <= t_max && u >= 0 && v >= 0 && w >= 0) {
+      new_hit(ray_at(ray, t[1]), normalVector, t[1], ray, color)
+    } else NULL
+  }
+}
